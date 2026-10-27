@@ -8,4 +8,7 @@ variable "project_name" {
   type        = string
 }
 
-
+variable "private_subnets" {
+  description = "Map of availability zones to CIDR blocks for private subnets"
+  type = map(string)
+}

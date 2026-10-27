@@ -4,14 +4,21 @@ variable "project_name" {
   default     = "buycontroll"
 }
 
+variable "environment" {
+  description = "Environment name (e.g. dev, staging, prod)"
+  type        = string
+  default     = "prod"
+}
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type        = string
   default     = "10.0.0.0/25"
 }
 
-variable "environment" {
-  description = "Environment name (e.g. dev, staging, prod)"
-  type        = string
-  default     = "prod"
+variable "private_subnets" {
+  type = map(string)
+  default = {
+    "us-east-1a" = "10.0.1.0/24"
+    "us-east-1b" = "10.0.2.0/24"
+  }
 }

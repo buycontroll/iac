@@ -11,3 +11,16 @@ resource "aws_vpc" "this" {
     Name = "${var.project_name}-vpc"
   }
 }
+
+resource "aws_subnet" "privates" {
+  for_each = var.private_subnets
+
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = each.value
+  availability_zone       = each.key
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "${var.project_name}-private-subnet-${each.key}"
+  }
+}
