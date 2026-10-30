@@ -12,9 +12,9 @@ module "api_gateway" {
 }
 
 module "lambda" {
-  source                = "./modules/lambda"
-  function_name         = var.function_name
-  environment           = var.environment
+  source        = "./modules/lambda"
+  function_name = var.function_name
+  environment   = var.environment
   environment_variables = {
     API_GATEWAY_ENDPOINT = module.api_gateway.api_endpoint
   }
