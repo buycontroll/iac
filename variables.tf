@@ -22,3 +22,9 @@ variable "private_subnets" {
     "us-east-1b" = "10.0.2.0/24"
   }
 }
+
+variable "function_name" {
+  description = "Nome da funcao Lambda"
+  type        = string
+  default     = "buycontroll-price-ingest"
+}

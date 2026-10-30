@@ -11,6 +11,15 @@ module "api_gateway" {
   environment  = var.environment
 }
 
+module "lambda" {
+  source                = "./modules/lambda"
+  function_name         = var.function_name
+  environment           = var.environment
+  environment_variables = {
+    API_GATEWAY_ENDPOINT = module.api_gateway.api_endpoint
+  }
+}
+
 output "api_gateway_endpoint" {
   value = module.api_gateway.api_endpoint
 }
