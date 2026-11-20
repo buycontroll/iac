@@ -81,6 +81,9 @@ resource "aws_api_gateway_stage" "this" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   stage_name    = var.environment
 
+  depends_on = [
+    aws_api_gateway_account.this
+  ]
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_logs.arn
     format = jsonencode({
@@ -98,4 +101,38 @@ resource "aws_api_gateway_stage" "this" {
   tags = {
     Environment = var.environment
   }
+}
+
+data "aws_iam_policy_document" "apigw_cloudwatch_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["apigateway.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "apigw_cloudwatch_logs" {
+  name               = "${var.project_name}-apigw-cloudwatch-${var.environment}"
+  assume_role_policy = data.aws_iam_policy_document.apigw_cloudwatch_assume_role.json
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "apigw_cloudwatch_logs" {
+  role       = aws_iam_role.apigw_cloudwatch_logs.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+}
+
+resource "aws_api_gateway_account" "this" {
+  cloudwatch_role_arn = aws_iam_role.apigw_cloudwatch_logs.arn
+
+  depends_on = [
+    aws_iam_role_policy_attachment.apigw_cloudwatch_logs
+  ]
 }
