@@ -6,11 +6,7 @@ module "network" {
 }
 
 module "api_gateway" {
-  source       = "./modules/api-gateway"
+  source       = "./modules/api-gateway-rest"
   project_name = var.project_name
   environment  = var.environment
-}
-
-output "api_gateway_endpoint" {
-  value = module.api_gateway.api_endpoint
 }
